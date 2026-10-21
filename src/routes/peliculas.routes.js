@@ -26,4 +26,30 @@ router.get("/", (req, res) => {
   });
 });
 
+// 2. [GET] /api/peliculas/:id - Buscar una película por su ID
+router.get("/:id", (req, res) => {
+  const idBuscado = parseInt(req.params.id, 10);
+
+  if (isNaN(idBuscado)) {
+    return res.status(400).json({
+      exito: false,
+      error: "El parámetro ID debe ser un número entero válido."
+    });
+  }
+
+  const peliculaEncontrada = peliculas.find((pelicula) => pelicula.id === idBuscado);
+  if (!peliculaEncontrada) {
+    return res.status(404).json({
+      exito: false,
+      error: `No se encontró una película con el ID ${idBuscado}.`
+    });
+  }
+
+  res.status(200).json({
+    exito: true,
+    mensaje: "Película encontrada.",
+    pelicula: peliculaEncontrada
+  });
+});
+
 export default router;
