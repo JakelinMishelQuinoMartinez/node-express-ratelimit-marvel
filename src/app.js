@@ -7,6 +7,7 @@
 import express from "express";
 import { logger } from "./middlewares/logger.js";
 import { apiLimiter } from "./middlewares/rateLimiter.js";
+import peliculasRouter from "./routes/peliculas.routes.js";
 
 // 1. Instanciar la aplicación Express
 const app = express();
@@ -36,7 +37,10 @@ app.get("/", (req, res) => {
 // 4. Aplicar el limitador a todas las rutas que comiencen con '/api/'
 app.use("/api/", apiLimiter);
 
-// 5. Iniciar el servidor HTTP si no estamos en modo test
+// 5. Montar el Enrutador Modular de Películas
+app.use("/api/peliculas", peliculasRouter);
+
+// 6. Iniciar el servidor HTTP si no estamos en modo test
 if (process.env.NODE_ENV !== "test") {
   app.listen(PORT, () => {
     console.log(`\n=============================================================`);
