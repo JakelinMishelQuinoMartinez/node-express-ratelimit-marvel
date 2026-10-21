@@ -7,6 +7,7 @@
 import express from "express";
 import { logger } from "./middlewares/logger.js";
 import { apiLimiter } from "./middlewares/rateLimiter.js";
+import { errorHandler } from "./middlewares/errorHandler.js";
 import peliculasRouter from "./routes/peliculas.routes.js";
 
 // 1. Instanciar la aplicación Express
@@ -48,7 +49,10 @@ app.use((req, res) => {
   });
 });
 
-// 7. Iniciar el servidor HTTP si no estamos en modo test
+// 7. Middleware Global de Manejo de Errores (4 parámetros)
+app.use(errorHandler);
+
+// 8. Iniciar el servidor HTTP si no estamos en modo test
 if (process.env.NODE_ENV !== "test") {
   app.listen(PORT, () => {
     console.log(`\n=============================================================`);
