@@ -5,6 +5,7 @@
  */
 
 import express from "express";
+import { apiLimiter } from "./middlewares/rateLimiter.js";
 
 // 1. Instanciar la aplicación Express
 const app = express();
@@ -30,7 +31,10 @@ app.get("/", (req, res) => {
   });
 });
 
-// 4. Iniciar el servidor HTTP si no estamos en modo test
+// 4. Aplicar el limitador a todas las rutas que comiencen con '/api/'
+app.use("/api/", apiLimiter);
+
+// 5. Iniciar el servidor HTTP si no estamos en modo test
 if (process.env.NODE_ENV !== "test") {
   app.listen(PORT, () => {
     console.log(`\n=============================================================`);
