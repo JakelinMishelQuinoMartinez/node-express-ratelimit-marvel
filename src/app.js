@@ -5,6 +5,7 @@
  */
 
 import express from "express";
+import { logger } from "./middlewares/logger.js";
 import { apiLimiter } from "./middlewares/rateLimiter.js";
 
 // 1. Instanciar la aplicación Express
@@ -13,6 +14,7 @@ const PORT = process.env.PORT || 3000;
 
 // 2. Middlewares Globales de Parseo y Auditoría
 app.use(express.json());
+app.use(logger);
 
 // 3. Ruta Pública de Bienvenida (sin límite estricto de API)
 app.get("/", (req, res) => {
