@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { peliculas } from "../data/peliculas.db.js";
+import { crearPeliculaLimiter } from "../middlewares/rateLimiter.js";
 
 /**
  * Enrutador Modular de Películas (express.Router)
@@ -49,6 +50,36 @@ router.get("/:id", (req, res) => {
     exito: true,
     mensaje: "Película encontrada.",
     pelicula: peliculaEncontrada
+  });
+});
+
+// 3. [POST] /api/peliculas - Crear una nueva película en el arreglo
+router.post("/", crearPeliculaLimiter, validarPelicula, (req, res) => {
+  if (peliculas.length >= MAXIMO_PELICULAS) {
+    return res.status(409).json({
+      exito: false,
+      error: `El catálogo ya alcanzó el máximo de ${MAXIMO_PELICULAS} películas.`
+    });
+  }
+
+  const { titulo, director, anio, duracionMinutos } = req.body;
+  const nuevoId =
+    peliculas.length > 0
+      ? Math.max(...peliculas.map((pelicula) => pelicula.id)) + 1
+      : 1;
+  const nuevaPelicula = {
+    id: nuevoId,
+    titulo: titulo.trim(),
+    director: director.trim(),
+    anio: Number(anio),
+    duracionMinutos: Number(duracionMinutos)
+  };
+
+  peliculas.push(nuevaPelicula);
+  res.status(201).json({
+    exito: true,
+    mensaje: "Película agregada al catálogo en memoria.",
+    pelicula: nuevaPelicula
   });
 });
 
