@@ -31,13 +31,6 @@ export let peliculas = [
     director: "Ryan Coogler",
     anio: 2018,
     duracionMinutos: 134
-  },
-  {
-    id: 5,
-    titulo: "Avengers: Endgame",
-    director: "Anthony y Joe Russo",
-    anio: 2019,
-    duracionMinutos: 181
   }
 ];
 
@@ -71,13 +64,6 @@ export function reiniciarPeliculas() {
       director: "Ryan Coogler",
       anio: 2018,
       duracionMinutos: 134
-    },
-    {
-      id: 5,
-      titulo: "Avengers: Endgame",
-      director: "Anthony y Joe Russo",
-      anio: 2019,
-      duracionMinutos: 181
     }
   );
   return peliculas;

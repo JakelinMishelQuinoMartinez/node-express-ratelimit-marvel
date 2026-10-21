@@ -105,10 +105,10 @@ Ejemplo de cuerpo para `POST` y `PUT`:
 
 ```json
 {
-  "titulo": "Iron Man",
-  "director": "Jon Favreau",
-  "anio": 2008,
-  "duracionMinutos": 126
+   "titulo": "Avengers: Endgame",
+   "director": "Anthony y Joe Russo",
+   "anio": 2019,
+   "duracionMinutos": 181
 }
 ```
 
