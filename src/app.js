@@ -40,7 +40,15 @@ app.use("/api/", apiLimiter);
 // 5. Montar el Enrutador Modular de Películas
 app.use("/api/peliculas", peliculasRouter);
 
-// 6. Iniciar el servidor HTTP si no estamos en modo test
+// 6. Middleware para Rutas Inexistentes (404 Not Found)
+app.use((req, res) => {
+  res.status(404).json({
+    exito: false,
+    error: `La ruta '${req.method} ${req.originalUrl}' no existe en la API de películas.`
+  });
+});
+
+// 7. Iniciar el servidor HTTP si no estamos en modo test
 if (process.env.NODE_ENV !== "test") {
   app.listen(PORT, () => {
     console.log(`\n=============================================================`);
