@@ -6,7 +6,7 @@ Este proyecto implementa una API REST con Node.js y Express para consultar y
 administrar un catálogo en memoria de películas asociadas al Universo
 Cinematográfico de Marvel (MCU). El ejercicio aplica separación por capas,
 operaciones CRUD, validación de datos, registro de solicitudes y limitación de
-frecuencia. El catálogo incluye cinco títulos de ejemplo y la API no permite
+frecuencia. El catálogo incluye cuatro títulos de ejemplo y la API no permite
 superar un máximo de cinco películas.
 
 **Palabras clave:** API REST, Express, middleware, CRUD, validación, control de
@@ -86,7 +86,7 @@ Cada película se representa con los campos:
 | `anio` | Entero | Entre 1888 y el año actual |
 | `duracionMinutos` | Entero | Mayor que cero |
 
-Los cinco registros iniciales son datos ilustrativos. Se conservan en un
+Los cuatro registros iniciales son datos ilustrativos. Se conservan en un
 arreglo JavaScript, no en una base de datos persistente.
 
 ### 5.2 Rutas
@@ -144,9 +144,88 @@ reinicio al detectar cambios:
 npm run dev
 ```
 
-## 7. Limitaciones y consideraciones
+## 7. Pruebas de endpoints desde la terminal
 
-1. **Persistencia:** al reiniciar el proceso, el catálogo vuelve a sus cinco
+Inicia el servidor en una terminal con `npm start` y déjalo ejecutándose.
+Abre otra terminal y ejecuta los comandos de tu sistema. Los ejemplos recorren
+las cinco operaciones CRUD; el `POST` agrega una película temporal, el `PUT` la
+actualiza y el `DELETE` la elimina.
+
+La API permite cinco solicitudes por minuto por IP. Ejecuta el flujo dentro de
+una ventana nueva de un minuto; si recibes `429`, espera a que se reinicie el
+límite antes de continuar. Los cambios solo se conservan mientras el servidor
+esté en ejecución.
+
+### Windows (PowerShell)
+
+```powershell
+$baseUrl = "http://localhost:3000/api/peliculas"
+
+# Listar películas
+Invoke-RestMethod -Method Get -Uri $baseUrl
+
+# Consultar la película con ID 1
+Invoke-RestMethod -Method Get -Uri "$baseUrl/1"
+
+# Crear una película (el catálogo tiene espacio para una más)
+$pelicula = @{
+  titulo = "Avengers: Endgame"
+  director = "Anthony y Joe Russo"
+  anio = 2019
+  duracionMinutos = 181
+}
+
+$respuesta = Invoke-RestMethod -Method Post -Uri $baseUrl `
+  -ContentType "application/json" `
+  -Body ($pelicula | ConvertTo-Json)
+$respuesta
+
+# Actualizar la película creada (el ID inicial de esta película es 5)
+$pelicula.titulo = "Película de prueba actualizada"
+Invoke-RestMethod -Method Put -Uri "$baseUrl/5" `
+  -ContentType "application/json" `
+  -Body ($pelicula | ConvertTo-Json)
+
+# Eliminar la película de prueba
+Invoke-RestMethod -Method Delete -Uri "$baseUrl/5"
+```
+
+### Linux (bash)
+
+```bash
+base_url="http://localhost:3000/api/peliculas"
+
+# Listar películas
+curl -i "$base_url"
+
+# Consultar la película con ID 1
+curl -i "$base_url/1"
+
+# Crear una película (el catálogo tiene espacio para una más)
+curl -i -X POST "$base_url" \
+  -H "Content-Type: application/json" \
+  -d '{
+   "titulo": "Avengers: Endgame",
+   "director": "Anthony y Joe Russo",
+   "anio": 2019,
+   "duracionMinutos": 181
+}'
+
+# Actualizar la película creada (el ID inicial de esta película es 5)
+curl -i -X PUT "$base_url/5" \
+  -H "Content-Type: application/json" \
+  -d '{"titulo":"Película de prueba actualizada","director":"Anthony y Joe Russo","anio":2019,"duracionMinutos":181}'
+
+# Eliminar la película de prueba
+curl -i -X DELETE "$base_url/5"
+```
+
+En ambas terminales, cada respuesta muestra el JSON de la operación. En Linux,
+`curl -i` también muestra el código y las cabeceras HTTP.
+
+## 8. Limitaciones y consideraciones
+
+1. **Persistencia:** al reiniciar el proceso, el catálogo vuelve a sus cuatro
    datos iniciales; las modificaciones no se guardan.
 2. **Escalabilidad:** el almacenamiento y el limitador en memoria no se
    comparten entre procesos o servidores.
