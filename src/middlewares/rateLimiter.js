@@ -17,3 +17,21 @@ export const apiLimiter = rateLimit({
     detalle: "Se permiten 5 solicitudes por minuto a la API."
   }
 });
+
+/**
+ * 2. Limitador Estricto para la Creación de Películas
+ * Permite un máximo de 3 creaciones por minuto por dirección IP.
+ */
+export const crearPeliculaLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minuto
+  limit: 3, // Máximo 3 creaciones por minuto por IP
+  statusCode: 429,
+  standardHeaders: "draft-7",
+  legacyHeaders: true,
+  message: {
+    exito: false,
+    status: 429,
+    error: "Se alcanzó el límite de creación de películas.",
+    detalle: "Se permiten 3 solicitudes de creación por minuto."
+  }
+});
